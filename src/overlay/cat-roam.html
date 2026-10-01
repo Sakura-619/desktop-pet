@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Pet Cat</title>
+  <link rel="stylesheet" href="cat-roam.css">
+</head>
+<body>
+  <div id="bubble">Meow! 💕</div>
+  <canvas id="chibi-canvas" width="150" height="150"></canvas>
+
+  <script src="audio-synth.js"></script>
+  <script src="cat-chibi-renderer.js"></script>
+  <script>
+    const canvas = document.getElementById('chibi-canvas');
+    const bubble = document.getElementById('bubble');
+    const renderer = new ChibiCatRenderer(canvas);
+
+    let bubbleTimeout = null;
+    function showSpeech(text, durationMs = 2500) {
+      clearTimeout(bubbleTimeout);
+      bubble.textContent = text;
+      bubble.classList.add('visible');
+      bubbleTimeout = setTimeout(() => {
+        bubble.classList.remove('visible');
+      }, durationMs);
+    }
+
+    // Dragging cat across desktop
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let clickTime = 0;
+
+    window.addEventListener('mousedown', (e) => {
+      if (e.button === 0) {
+        isDragging = true;
+        dragStartX = e.screenX;
+        dragStartY = e.screenY;
+        clickTime = Date.now();
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const deltaX = e.screenX - dragStartX;
+        const deltaY = e.screenY - dragStartY;
+        dragStartX = e.screenX;
+        dragStartY = e.screenY;
+
+        if (window.electronAPI) {
+          window.electronAPI.dragCat(deltaX, deltaY);
+        }
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        const duration = Date.now() - clickTime;
+        if (duration < 250) {
+          handlePet();
+        }
+      }
+    });
+
+    // Double click for meow
+    window.addEventListener('dblclick', () => {
+      if (window.CatAudio) window.CatAudio.playMeow();
+      showSpeech("Meow! 🐾", 1800);
+    });
+
+    function handlePet() {
+      renderer.triggerPet();
+      if (window.CatAudio) {
+        window.CatAudio.playPurr();
+        window.CatAudio.playBoop();
+      }
+      showSpeech("Purrrr~ ❤️", 2000);
+      if (window.electronAPI) {
+        window.electronAPI.petCat();
+      }
+    }
+
+    // Welcome greeting on startup
+    setTimeout(() => {
+      if (window.CatAudio) window.CatAudio.playMeow();
+      showSpeech(`Hi! I'm ${renderer.petName}! 🐾`, 3500);
+    }, 600);
+
+    // Animation Loop
+    let lastTime = performance.now();
+    function loop(now) {
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      renderer.update(dt);
+      renderer.draw();
+
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    // Listen to IPC events from main process
+    if (window.electronAPI) {
+      window.electronAPI.onCatState((state) => {
+        renderer.setCustomization({
+          fur: state.fur,
+          accessory: state.accessory,
+          name: state.name
+        });
+      });
+
+      window.electronAPI.onCatAction((action) => {
+        if (action.type === 'feed') {
+          renderer.triggerEat();
+          if (window.CatAudio) window.CatAudio.playEat();
+          showSpeech("Yummy food! 🐟", 2500);
+        } else if (action.type === 'pet') {
+          handlePet();
+        } else if (action.type === 'sleep') {
+          renderer.setState('sleep');
+          showSpeech("Zzz... 🌙", 3500);
+        } else if (action.type === 'wake') {
+          renderer.setState('idle');
+          showSpeech("Good morning! ☀️", 2000);
+          if (window.CatAudio) window.CatAudio.playMeow();
+        } else if (action.type === 'walk_dir') {
+          renderer.direction = action.direction;
+          renderer.setState('walk');
+        } else if (action.type === 'idle') {
+          renderer.setState('idle');
+        } else if (action.type === 'speech') {
+          showSpeech(action.text, 2500);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

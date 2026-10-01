@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Pet: Cat Companion</title>
+  <link rel="stylesheet" href="station.css">
+</head>
+<body>
+  <div id="station-card">
+    <!-- Header -->
+    <div class="station-header">
+      <div class="header-info">
+        <span class="pet-title">🐾 <span id="ui-pet-name">Mochi</span>'s Base</span>
+        <span class="status-badge" id="ui-friendship-badge">⭐ Lvl 1 • Curious Stray</span>
+      </div>
+      <div class="win-actions">
+        <button class="win-btn" id="btn-minimize" title="Minimize to Taskbar">—</button>
+        <button class="win-btn win-btn-close" id="btn-close" title="Close Game">✕</button>
+      </div>
+    </div>
+
+    <!-- Habitat Shelf: Bed & Food Station -->
+    <div class="habitat-shelf">
+      <!-- Bed Station (Donut Bed or Strawberry Bed from user images) -->
+      <div class="habitat-item" id="item-bed" title="Click to call cat to bed / wake up">
+        <div class="item-visual" id="bed-visual-container">
+          <!-- Donut Bed SVG (Image 1) -->
+          <svg id="svg-donut-bed" viewBox="0 0 100 80" width="85" height="68">
+            <ellipse cx="50" cy="50" rx="44" ry="24" fill="#d97582" stroke="#2c2420" stroke-width="2.5"/>
+            <ellipse cx="50" cy="44" rx="36" ry="18" fill="#fcd5b5" stroke="#2c2420" stroke-width="2"/>
+            <ellipse cx="50" cy="47" rx="26" ry="12" fill="#fbd0a7"/>
+            <!-- Bed creases -->
+            <path d="M 30 38 Q 38 46 36 50 M 42 34 Q 45 44 45 50 M 58 34 Q 55 44 55 50 M 70 38 Q 62 46 64 50" stroke="#e8a882" stroke-width="1.5" fill="none"/>
+          </svg>
+
+          <!-- Strawberry Bed SVG (Image 2) -->
+          <svg id="svg-strawberry-bed" viewBox="0 0 100 90" width="85" height="74" style="display: none;">
+            <!-- Strawberry Dome -->
+            <path d="M 18 70 C 12 36 28 18 50 18 C 72 18 88 36 82 70 C 76 78 24 78 18 70 Z" fill="#ff4d4d" stroke="#2c2420" stroke-width="2.5"/>
+            <!-- Yellow seeds -->
+            <ellipse cx="30" cy="36" rx="2" ry="3.5" fill="#f1c40f" transform="rotate(-15 30 36)"/>
+            <ellipse cx="70" cy="36" rx="2" ry="3.5" fill="#f1c40f" transform="rotate(15 70 36)"/>
+            <ellipse cx="40" cy="46" rx="2" ry="3.5" fill="#f1c40f"/>
+            <ellipse cx="60" cy="46" rx="2" ry="3.5" fill="#f1c40f"/>
+            <!-- Green Calyx Top -->
+            <path d="M 50 8 C 48 14 36 12 32 20 C 38 22 44 20 48 24 C 50 20 54 20 56 24 C 60 20 66 22 72 20 C 68 12 56 14 50 8 Z" fill="#2ecc71" stroke="#2c2420" stroke-width="2"/>
+            <!-- Entrance Arch -->
+            <path d="M 34 72 C 34 50 66 50 66 72 Z" fill="#ffeaa7" stroke="#2c2420" stroke-width="2"/>
+            <ellipse cx="50" cy="71" rx="14" ry="4" fill="#fab1a0"/>
+          </svg>
+        </div>
+        <div class="item-label" id="bed-label">🛏️ Plush Bed</div>
+        <div class="item-sub" id="cat-location-status">🐾 Roaming Monitor</div>
+      </div>
+
+      <!-- Food Station (Cyan Food Bag + Bowl from user images) -->
+      <div class="habitat-item" id="item-food" title="Click to pour delicious food into bowl!">
+        <div class="item-visual">
+          <svg viewBox="0 0 110 80" width="95" height="70">
+            <!-- Cyan Cat Food Bag (Image 3) -->
+            <g transform="translate(10, 8)">
+              <path d="M 10 12 L 42 12 L 46 54 L 6 54 Z" fill="#00cec9" stroke="#2c2420" stroke-width="2"/>
+              <path d="M 42 12 L 48 18 L 52 50 L 46 54 Z" fill="#0984e3" stroke="#2c2420" stroke-width="1.8"/>
+              <!-- Cat Face logo on bag -->
+              <path d="M 20 30 L 22 23 L 26 27 L 30 23 L 32 30 C 33 35 19 35 20 30 Z" fill="#ffffff" stroke="#2c2420" stroke-width="1.5"/>
+              <text x="26" y="44" text-anchor="middle" font-size="8" font-weight="900" fill="#2c2420">CAT</text>
+            </g>
+            <!-- Ceramic Food Bowl -->
+            <g transform="translate(56, 32)">
+              <ellipse cx="24" cy="24" rx="22" ry="9" fill="#ff7675" stroke="#2c2420" stroke-width="2"/>
+              <ellipse cx="24" cy="21" rx="17" ry="6" fill="#ffeaa7" stroke="#2c2420" stroke-width="1.5"/>
+              <!-- Kibbles -->
+              <g id="kibble-pile" style="display: block;">
+                <circle cx="20" cy="20" r="2" fill="#d35400"/>
+                <circle cx="25" cy="21" r="2" fill="#ba4a00"/>
+                <circle cx="28" cy="20" r="2" fill="#d35400"/>
+                <circle cx="23" cy="22" r="1.5" fill="#e67e22"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="item-label">🥣 Food Station</div>
+        <div class="item-sub" id="food-status-sub">Click to Pour</div>
+      </div>
+    </div>
+
+    <!-- Footer Stats & Actions -->
+    <div class="station-footer">
+      <div class="stats-row">
+        <!-- Hunger -->
+        <div class="stat-box">
+          <div class="stat-info">
+            <span>🐟 Hunger</span>
+            <span id="ui-hunger-text">100%</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-fill meter-hunger" id="bar-hunger" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Love -->
+        <div class="stat-box">
+          <div class="stat-info">
+            <span>💖 Love</span>
+            <span id="ui-love-text">100%</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-fill meter-love" id="bar-love" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Energy -->
+        <div class="stat-box">
+          <div class="stat-info">
+            <span>⚡ Energy</span>
+            <span id="ui-energy-text">100%</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-fill meter-energy" id="bar-energy" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="btn-chip btn-feed" id="btn-feed">
+          <span>🐟</span> Pour Food
+        </button>
+        <button class="btn-chip btn-rest" id="btn-rest">
+          <span id="rest-icon">🛏️</span> <span id="rest-text">Call to Bed</span>
+        </button>
+        <button class="btn-chip btn-style" id="btn-style">
+          <span>🎨</span> Upgrades
+        </button>
+        <button class="btn-chip btn-mischief" id="btn-mischief">
+          <span>😼</span> Mischief
+        </button>
+      </div>
+    </div>
+
+    <!-- Upgrades / Customization Modal -->
+    <div id="custom-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <span>Upgrades & Styles</span>
+          <button class="win-btn" id="btn-close-modal">✕</button>
+        </div>
+
+        <div class="opt-group">
+          <div class="opt-title">Cat Name</div>
+          <input type="text" id="input-pet-name" class="name-input" maxlength="20" placeholder="Name">
+        </div>
+
+        <div class="opt-group">
+          <div class="opt-title">Bed Style</div>
+          <div class="chips-container" id="bed-options">
+            <div class="chip-opt selected" data-value="donut">Plush Donut Bed</div>
+            <div class="chip-opt" data-value="strawberry">Strawberry Dome</div>
+          </div>
+        </div>
+
+        <div class="opt-group">
+          <div class="opt-title">Fur Coat</div>
+          <div class="chips-container" id="fur-options">
+            <div class="chip-opt selected" data-value="cream">Cream (Chibi)</div>
+            <div class="chip-opt" data-value="ginger">Ginger</div>
+            <div class="chip-opt" data-value="tuxedo">Tuxedo</div>
+            <div class="chip-opt" data-value="calico">Calico</div>
+          </div>
+        </div>
+
+        <div class="opt-group">
+          <div class="opt-title">Accessory</div>
+          <div class="chips-container" id="acc-options">
+            <div class="chip-opt selected" data-value="goggles">Goggles</div>
+            <div class="chip-opt" data-value="bell">Bell</div>
+            <div class="chip-opt" data-value="bow">Bowtie</div>
+            <div class="chip-opt" data-value="hat">Hat</div>
+            <div class="chip-opt" data-value="none">None</div>
+          </div>
+        </div>
+
+        <button class="btn-save-upgrades" id="btn-save-upgrades">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="station.js"></script>
+</body>
+</html>

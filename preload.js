@@ -9,14 +9,17 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('cat-action', (_event, action) => callback(action));
   },
 
-  // Pet Care Actions
+  // Pet Care & Upgrades
   feedCat: () => ipcRenderer.send('feed-cat'),
   petCat: () => ipcRenderer.send('pet-cat'),
+  toggleRest: () => ipcRenderer.send('toggle-rest'),
   setCustomization: (data) => ipcRenderer.send('set-customization', data),
   triggerMischief: () => ipcRenderer.send('trigger-mischief'),
 
+  // Cat Movement & Dragging
+  dragCat: (deltaX, deltaY) => ipcRenderer.send('drag-cat', { deltaX, deltaY }),
+
   // Window Controls
   minimizeWindow: () => ipcRenderer.send('minimize-window'),
-  closeWindow: () => ipcRenderer.send('close-window'),
-  togglePin: (pinned) => ipcRenderer.send('toggle-pin', pinned)
+  closeWindow: () => ipcRenderer.send('close-window')
 });
