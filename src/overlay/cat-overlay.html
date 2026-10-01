@@ -123,6 +123,12 @@
     }
     requestAnimationFrame(loop);
 
+    // Welcome greeting on startup
+    setTimeout(() => {
+      renderer.triggerMeow();
+      showBubble("Hi! I'm " + renderer.petName + "! 🐾💕", 4000);
+    }, 700);
+
     // Autonomous behavior cycle (wandering, sitting, meowing, mischief)
     let wanderTimer = 0;
     setInterval(() => {
