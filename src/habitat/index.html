@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Pet: Cat Adventure</title>
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <div id="habitat-container">
+    <!-- Header Bar -->
+    <div id="header-bar">
+      <div class="pet-header-info">
+        <div class="header-title">
+          <span>🐾</span> <span id="header-pet-name">Mochi</span>
+        </div>
+        <div class="friendship-pill" id="header-friendship-badge">⭐ Lvl 1 • Curious Stray</div>
+      </div>
+      <div class="window-controls">
+        <button class="win-btn" id="btn-pin" title="Toggle Always on Top">📌</button>
+        <button class="win-btn" id="btn-minimize" title="Minimize to Taskbar">—</button>
+        <button class="win-btn win-btn-close" id="btn-close" title="Close Game">✕</button>
+      </div>
+    </div>
+
+    <!-- Care HUD -->
+    <div id="care-hud">
+      <div class="stats-group">
+        <!-- Hunger -->
+        <div class="hud-stat">
+          <div class="hud-label-row">
+            <span>🐟 Hunger</span>
+            <span id="ui-hunger-val">80%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-hunger" id="bar-hunger" style="width: 80%;"></div>
+          </div>
+        </div>
+
+        <!-- Love -->
+        <div class="hud-stat">
+          <div class="hud-label-row">
+            <span>💖 Love</span>
+            <span id="ui-love-val">70%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-love" id="bar-love" style="width: 70%;"></div>
+          </div>
+        </div>
+
+        <!-- XP -->
+        <div class="hud-stat">
+          <div class="hud-label-row">
+            <span>⭐ XP</span>
+            <span id="ui-xp-val">20/100</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill bar-xp" id="bar-xp" style="width: 20%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Chips -->
+      <div class="hud-actions">
+        <button class="action-chip chip-feed" id="btn-feed" title="Feed your pet (3x a day)">
+          <span>🐟</span> Feed
+        </button>
+        <button class="action-chip chip-pet" id="btn-pet" title="Give your pet affection">
+          <span>💖</span> Pet
+        </button>
+        <button class="action-chip chip-rest" id="btn-rest" title="Send pet to rest in bed">
+          <span id="rest-icon">🛏️</span> <span id="rest-label">Rest</span>
+        </button>
+        <button class="action-chip chip-style" id="btn-style" title="Customize fur and accessories">
+          <span>🎨</span> Style
+        </button>
+        <button class="action-chip chip-mischief" id="btn-mischief" title="Trigger playful window mischief!">
+          <span>😼</span> Mischief
+        </button>
+      </div>
+    </div>
+
+    <!-- Playfield Canvas with Resting Bed & Food Bowl -->
+    <div id="playfield">
+      <div id="speech-bubble">Meow! 💕</div>
+
+      <!-- Left Side: Cozy Resting Bed -->
+      <svg id="resting-bed" viewBox="0 0 110 60" title="Cozy Cat Bed (Click to rest)">
+        <defs>
+          <linearGradient id="bedGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#a29bfe"/>
+            <stop offset="100%" stop-color="#6c5ce7"/>
+          </linearGradient>
+          <linearGradient id="cushionGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ffeaa7"/>
+            <stop offset="100%" stop-color="#fdcb6e"/>
+          </linearGradient>
+        </defs>
+        <!-- Outer Bed Rim -->
+        <ellipse cx="55" cy="40" rx="50" ry="18" fill="url(#bedGrad)" stroke="#1a1815" stroke-width="3"/>
+        <!-- Inner Soft Cushion -->
+        <ellipse cx="55" cy="38" rx="42" ry="13" fill="url(#cushionGrad)" stroke="#1a1815" stroke-width="2"/>
+        <!-- Cozy Plaid Blanket edge -->
+        <path d="M 25 38 Q 55 46 85 38 Q 75 48 35 48 Z" fill="#ff7675" opacity="0.85"/>
+        <text x="55" y="24" text-anchor="middle" font-size="11" font-weight="bold" fill="#6c5ce7">🛏️ Bed</text>
+      </svg>
+
+      <!-- Right Side: Food & Water Bowl -->
+      <svg id="food-bowl" viewBox="0 0 75 50" title="Food Bowl (Click to feed)">
+        <defs>
+          <linearGradient id="bowlGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#74b9ff"/>
+            <stop offset="100%" stop-color="#0984e3"/>
+          </linearGradient>
+        </defs>
+        <!-- Bowl Base -->
+        <ellipse cx="37" cy="36" rx="34" ry="12" fill="url(#bowlGrad)" stroke="#1a1815" stroke-width="3"/>
+        <!-- Bowl Interior -->
+        <ellipse cx="37" cy="32" rx="28" ry="8" fill="#dff9fb" stroke="#1a1815" stroke-width="2"/>
+        <!-- Food Kibble / Fish in bowl -->
+        <g id="bowl-food" style="display: block;">
+          <ellipse cx="37" cy="32" rx="22" ry="6" fill="#e67e22"/>
+          <circle cx="30" cy="31" r="2.5" fill="#d35400"/>
+          <circle cx="36" cy="33" r="2.5" fill="#ba4a00"/>
+          <circle cx="43" cy="31" r="2.5" fill="#d35400"/>
+          <!-- Little fish treat -->
+          <path d="M 33 30 Q 38 27 42 30 Q 38 33 33 30 Z" fill="#f39c12" stroke="#b9770e" stroke-width="1"/>
+        </g>
+        <text x="37" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#0984e3">🐟 Food</text>
+      </svg>
+
+      <!-- Canvas for animated Cat -->
+      <canvas id="habitat-canvas" width="660" height="150"></canvas>
+    </div>
+
+    <!-- Customization Modal -->
+    <div id="custom-modal">
+      <div class="modal-content">
+        <div class="modal-title">
+          <span>Customize Your Companion</span>
+          <button class="win-btn" id="btn-close-modal">✕</button>
+        </div>
+
+        <div class="custom-row">
+          <div class="custom-label">Pet Name</div>
+          <input type="text" id="input-name" class="name-input" maxlength="20" placeholder="Cat's Name">
+        </div>
+
+        <div class="custom-row">
+          <div class="custom-label">Fur Pattern</div>
+          <div class="options-row" id="fur-options">
+            <div class="opt-chip selected" data-value="orange">Ginger</div>
+            <div class="opt-chip" data-value="tuxedo">Tuxedo</div>
+            <div class="opt-chip" data-value="calico">Calico</div>
+            <div class="opt-chip" data-value="white">White</div>
+          </div>
+        </div>
+
+        <div class="custom-row">
+          <div class="custom-label">Accessory</div>
+          <div class="options-row" id="acc-options">
+            <div class="opt-chip selected" data-value="goggles">Goggles</div>
+            <div class="opt-chip" data-value="bell">Bell</div>
+            <div class="opt-chip" data-value="bow">Bowtie</div>
+            <div class="opt-chip" data-value="hat">Hat</div>
+            <div class="opt-chip" data-value="none">None</div>
+          </div>
+        </div>
+
+        <button class="btn-save" id="btn-save-custom">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../overlay/audio-synth.js"></script>
+  <script src="cat-character.js"></script>
+  <script>
+    // Elements
+    const canvas = document.getElementById('habitat-canvas');
+    const bubble = document.getElementById('speech-bubble');
+    const restingBed = document.getElementById('resting-bed');
+    const foodBowl = document.getElementById('food-bowl');
+    const bowlFood = document.getElementById('bowl-food');
+
+    // Stats UI
+    const headerPetName = document.getElementById('header-pet-name');
+    const headerBadge = document.getElementById('header-friendship-badge');
+    const uiHungerVal = document.getElementById('ui-hunger-val');
+    const barHunger = document.getElementById('bar-hunger');
+    const uiLoveVal = document.getElementById('ui-love-val');
+    const barLove = document.getElementById('bar-love');
+    const uiXpVal = document.getElementById('ui-xp-val');
+    const barXp = document.getElementById('bar-xp');
+
+    // Buttons
+    const btnFeed = document.getElementById('btn-feed');
+    const btnPet = document.getElementById('btn-pet');
+    const btnRest = document.getElementById('btn-rest');
+    const restIcon = document.getElementById('rest-icon');
+    const restLabel = document.getElementById('rest-label');
+    const btnStyle = document.getElementById('btn-style');
+    const btnMischief = document.getElementById('btn-mischief');
+
+    // Window controls
+    const btnPin = document.getElementById('btn-pin');
+    const btnMinimize = document.getElementById('btn-minimize');
+    const btnClose = document.getElementById('btn-close');
+
+    // Modal
+    const customModal = document.getElementById('custom-modal');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const btnSaveCustom = document.getElementById('btn-save-custom');
+    const inputName = document.getElementById('input-name');
+    const furChips = document.querySelectorAll('#fur-options .opt-chip');
+    const accChips = document.querySelectorAll('#acc-options .opt-chip');
+
+    let isPinned = true;
+    let selectedFur = 'orange';
+    let selectedAcc = 'goggles';
+    let petState = {};
+
+    // Initialize Cat Character
+    const cat = new CatCharacter(canvas);
+
+    // Bubble display helper
+    let bubbleTimer = null;
+    function showSpeech(text, durationMs = 2500) {
+      clearTimeout(bubbleTimer);
+      bubble.textContent = text;
+      bubble.classList.add('visible');
+      bubbleTimer = setTimeout(() => {
+        bubble.classList.remove('visible');
+      }, durationMs);
+    }
+
+    // Welcome Greeting on startup
+    setTimeout(() => {
+      if (window.CatAudio) window.CatAudio.playMeow();
+      showSpeech(`Hi! I'm ${cat.petName}! 🐾💕`, 3500);
+    }, 600);
+
+    // Animation Loop
+    let lastTime = performance.now();
+    function animate(now) {
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+
+      cat.update(dt);
+      cat.draw();
+
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+
+    // Interactive Feeding
+    function triggerFeed() {
+      if (window.electronAPI) {
+        window.electronAPI.feedCat();
+      }
+      bowlFood.style.display = 'block';
+      showSpeech("Fish & snacks! 🐟", 2000);
+
+      // Cat walks over to the bowl on the right
+      cat.moveTo(490, () => {
+        cat.triggerEat();
+        if (window.CatAudio) window.CatAudio.playEat();
+        showSpeech("Nom nom nom! 😋", 2500);
+        setTimeout(() => {
+          bowlFood.style.display = 'none';
+        }, 2500);
+      });
+    }
+
+    btnFeed.addEventListener('click', triggerFeed);
+    foodBowl.addEventListener('click', triggerFeed);
+
+    // Interactive Petting
+    function triggerPet() {
+      if (window.electronAPI) {
+        window.electronAPI.petCat();
+      }
+      cat.triggerPet();
+      if (window.CatAudio) {
+        window.CatAudio.playPurr();
+        window.CatAudio.playBoop();
+      }
+      showSpeech("Purrrr~ ❤️", 2000);
+    }
+
+    btnPet.addEventListener('click', triggerPet);
+
+    // Interactive Resting / Nap
+    function toggleRest() {
+      if (cat.state === 'sleep') {
+        cat.wakeUp();
+        restIcon.textContent = '🛏️';
+        restLabel.textContent = 'Rest';
+        showSpeech("Good morning! ☀️", 2000);
+        if (window.CatAudio) window.CatAudio.playMeow();
+      } else {
+        showSpeech("Nap time... 🌙", 2000);
+        cat.moveTo(85, () => {
+          cat.triggerSleep();
+          restIcon.textContent = '☀️';
+          restLabel.textContent = 'Wake';
+          showSpeech("Zzz... 💤", 3000);
+        });
+      }
+    }
+
+    btnRest.addEventListener('click', toggleRest);
+    restingBed.addEventListener('click', toggleRest);
+
+    // Click on Cat canvas to interact
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      // Check distance to cat
+      const dist = Math.hypot(clickX - cat.x, clickY - cat.y);
+      if (dist < 55) {
+        triggerPet();
+      } else {
+        // Move cat towards click
+        cat.moveTo(clickX);
+      }
+    });
+
+    // Double click cat for meow
+    canvas.addEventListener('dblclick', () => {
+      if (window.CatAudio) window.CatAudio.playMeow();
+      showSpeech("Meow! 🐾", 1800);
+    });
+
+    // Playful Mischief Action
+    btnMischief.addEventListener('click', () => {
+      showSpeech("Hehehe! Pounce! 😼", 2500);
+      if (window.CatAudio) window.CatAudio.playMeow();
+      if (window.electronAPI) {
+        window.electronAPI.triggerMischief();
+      }
+    });
+
+    // Window controls
+    btnPin.addEventListener('click', () => {
+      isPinned = !isPinned;
+      btnPin.style.opacity = isPinned ? '1' : '0.4';
+      if (window.electronAPI) {
+        window.electronAPI.togglePin(isPinned);
+      }
+    });
+
+    btnMinimize.addEventListener('click', () => {
+      if (window.electronAPI) {
+        window.electronAPI.minimizeWindow();
+      }
+    });
+
+    btnClose.addEventListener('click', () => {
+      if (window.electronAPI) {
+        window.electronAPI.closeWindow();
+      }
+    });
+
+    // Customization Modal
+    btnStyle.addEventListener('click', () => {
+      inputName.value = cat.petName;
+      selectedFur = cat.fur;
+      selectedAcc = cat.accessory;
+
+      furChips.forEach(c => c.classList.toggle('selected', c.dataset.value === selectedFur));
+      accChips.forEach(c => c.classList.toggle('selected', c.dataset.value === selectedAcc));
+
+      customModal.classList.add('visible');
+    });
+
+    btnCloseModal.addEventListener('click', () => {
+      customModal.classList.remove('visible');
+    });
+
+    furChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        furChips.forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        selectedFur = chip.dataset.value;
+      });
+    });
+
+    accChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        accChips.forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        selectedAcc = chip.dataset.value;
+      });
+    });
+
+    btnSaveCustom.addEventListener('click', () => {
+      const newName = inputName.value.trim() || 'Mochi';
+      cat.setCustomization({
+        name: newName,
+        fur: selectedFur,
+        accessory: selectedAcc
+      });
+      headerPetName.textContent = newName;
+
+      if (window.electronAPI) {
+        window.electronAPI.setCustomization({
+          name: newName,
+          fur: selectedFur,
+          accessory: selectedAcc
+        });
+      }
+      customModal.classList.remove('visible');
+      if (window.CatAudio) window.CatAudio.playChime();
+    });
+
+    // Sync with Main Process PetState
+    if (window.electronAPI) {
+      window.electronAPI.onCatState((state) => {
+        petState = state;
+        headerPetName.textContent = state.name || 'Mochi';
+        headerBadge.textContent = `⭐ Lvl ${state.friendshipLevel} • ${state.friendshipTitle}`;
+
+        uiHungerVal.textContent = `${state.hunger}% (${state.mealsToday}/3)`;
+        barHunger.style.width = `${state.hunger}%`;
+
+        uiLoveVal.textContent = `${state.love}%`;
+        barLove.style.width = `${state.love}%`;
+
+        uiXpVal.textContent = `${state.friendshipXP}/${state.xpNeeded}`;
+        barXp.style.width = `${(state.friendshipXP / state.xpNeeded) * 100}%`;
+
+        cat.setCustomization({
+          fur: state.fur,
+          accessory: state.accessory,
+          name: state.name
+        });
+      });
+    }
+
+    // Autonomous behavior (wandering, sitting, occasional meows)
+    setInterval(() => {
+      if (cat.state === 'sleep' || cat.state === 'eat') return;
+
+      const roll = Math.random();
+      if (roll < 0.4) {
+        // Wander to random position on shelf
+        const newX = 120 + Math.random() * 380;
+        cat.moveTo(newX);
+      } else if (roll < 0.65) {
+        // Idle sit
+        cat.state = 'idle';
+      } else if (roll < 0.8) {
+        // Meow
+        if (window.CatAudio) window.CatAudio.playMeow();
+        showSpeech("Meow~ 🐾", 2000);
+      }
+    }, 7000);
+  </script>
+</body>
+</html>

@@ -9,15 +9,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('cat-action', (_event, action) => callback(action));
   },
 
-  // Emitters
+  // Pet Care Actions
   feedCat: () => ipcRenderer.send('feed-cat'),
   petCat: () => ipcRenderer.send('pet-cat'),
-  toggleDismiss: () => ipcRenderer.send('toggle-dismiss'),
   setCustomization: (data) => ipcRenderer.send('set-customization', data),
-  toggleMischief: (enabled) => ipcRenderer.send('toggle-mischief', enabled),
   triggerMischief: () => ipcRenderer.send('trigger-mischief'),
-  setWidgetSize: (width, height) => ipcRenderer.send('set-widget-size', { width, height }),
-  dragCatWindow: (deltaX, deltaY) => ipcRenderer.send('drag-cat-window', { deltaX, deltaY }),
-  startCatWalk: (direction) => ipcRenderer.send('start-cat-walk', { direction }),
-  checkRandomMischief: () => ipcRenderer.send('check-random-mischief')
+
+  // Window Controls
+  minimizeWindow: () => ipcRenderer.send('minimize-window'),
+  closeWindow: () => ipcRenderer.send('close-window'),
+  togglePin: (pinned) => ipcRenderer.send('toggle-pin', pinned)
 });
