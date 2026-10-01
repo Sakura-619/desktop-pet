@@ -1,0 +1,22 @@
+{
+  "name": "desktop-pet",
+  "version": "1.0.0",
+  "description": "Interactive screen pet cat overlay with real-time needs, petting, customization, and playful window mischief.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron ."
+  },
+  "keywords": [
+    "desktop-pet",
+    "cat",
+    "overlay",
+    "vpet",
+    "electron"
+  ],
+  "author": "Sakura-619",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}

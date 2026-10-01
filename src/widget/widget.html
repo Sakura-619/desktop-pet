@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Pet Widget</title>
+  <link rel="stylesheet" href="widget.css">
+</head>
+<body>
+  <!-- Collapsed Mini Paw Badge -->
+  <div id="mini-badge" title="Expand Pet Controls">🐾</div>
+
+  <!-- Main Expanded Card -->
+  <div id="main-card">
+    <div class="widget-header">
+      <div class="pet-info">
+        <div class="pet-avatar" id="pet-avatar-icon">🐱</div>
+        <div class="pet-name-title">
+          <div class="pet-name" id="ui-pet-name">Mochi</div>
+          <div class="friendship-badge" id="ui-friendship-badge">⭐ Lvl 1 • Curious Stray</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="btn-collapse" title="Minimize Control Panel">—</button>
+      </div>
+    </div>
+
+    <div class="widget-body">
+      <!-- Hunger Bar (3 meals a day) -->
+      <div class="stat-item">
+        <div class="stat-label-row">
+          <span class="stat-label">🐟 Hunger</span>
+          <span id="ui-hunger-text">80% (Meals: 1/3)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill fill-hunger" id="bar-hunger" style="width: 80%;"></div>
+        </div>
+      </div>
+
+      <!-- Love / Affection Bar -->
+      <div class="stat-item">
+        <div class="stat-label-row">
+          <span class="stat-label">💖 Love</span>
+          <span id="ui-love-text">70%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill fill-love" id="bar-love" style="width: 70%;"></div>
+        </div>
+      </div>
+
+      <!-- Friendship Progress Bar -->
+      <div class="stat-item">
+        <div class="stat-label-row">
+          <span class="stat-label">⭐ Friendship XP</span>
+          <span id="ui-xp-text">20 / 100</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill fill-xp" id="bar-xp" style="width: 20%;"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-grid">
+        <button class="btn-action btn-feed" id="btn-feed">
+          <span>🐟</span> Feed
+        </button>
+        <button class="btn-action btn-pet" id="btn-pet">
+          <span>💖</span> Pet
+        </button>
+        <button class="btn-action btn-dismiss" id="btn-dismiss">
+          <span id="dismiss-icon">🛏️</span> <span id="dismiss-label">Snooze</span>
+        </button>
+        <button class="btn-action btn-customize" id="btn-customize">
+          <span>🎨</span> Style
+        </button>
+      </div>
+
+      <!-- Mischief Toggle & Manual Trigger -->
+      <div class="mischief-row">
+        <span>😼 Window Mischief</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="icon-btn" id="btn-trigger-mischief" title="Test Cat Mischief Now!">⚡</button>
+          <label class="switch">
+            <input type="checkbox" id="chk-mischief" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customization Modal -->
+  <div id="custom-modal">
+    <div class="modal-content">
+      <div class="modal-title">
+        <span>Customize Your Cat</span>
+        <button class="icon-btn" id="btn-close-modal">✕</button>
+      </div>
+
+      <div class="custom-section">
+        <div class="custom-label">Pet Name</div>
+        <input type="text" id="input-name" class="name-input" maxlength="20" placeholder="Cat's Name">
+      </div>
+
+      <div class="custom-section">
+        <div class="custom-label">Fur Pattern</div>
+        <div class="options-row" id="fur-options">
+          <div class="option-chip selected" data-value="orange">Ginger</div>
+          <div class="option-chip" data-value="tuxedo">Tuxedo</div>
+          <div class="option-chip" data-value="calico">Calico</div>
+          <div class="option-chip" data-value="white">White</div>
+        </div>
+      </div>
+
+      <div class="custom-section">
+        <div class="custom-label">Accessory</div>
+        <div class="options-row" id="acc-options">
+          <div class="option-chip selected" data-value="bell">Bell</div>
+          <div class="option-chip" data-value="bow">Bowtie</div>
+          <div class="option-chip" data-value="hat">Party Hat</div>
+          <div class="option-chip" data-value="none">None</div>
+        </div>
+      </div>
+
+      <button class="btn-save-custom" id="btn-save-custom">Save Changes</button>
+    </div>
+  </div>
+
+  <script src="widget.js"></script>
+</body>
+</html>

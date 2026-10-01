@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Pet Overlay</title>
+  <link rel="stylesheet" href="cat-overlay.css">
+</head>
+<body>
+  <div id="bubble">Meow!</div>
+  <canvas id="cat-canvas" width="180" height="180"></canvas>
+
+  <script src="audio-synth.js"></script>
+  <script src="cat-renderer.js"></script>
+  <script>
+    const canvas = document.getElementById('cat-canvas');
+    const bubble = document.getElementById('bubble');
+    const renderer = new CatRenderer(canvas);
+
+    let bubbleTimeout = null;
+    function showBubble(text, durationMs = 2000) {
+      clearTimeout(bubbleTimeout);
+      bubble.textContent = text;
+      bubble.classList.add('visible');
+      bubbleTimeout = setTimeout(() => {
+        bubble.classList.remove('visible');
+      }, durationMs);
+    }
+
+    // Dragging the cat window across desktop
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let clickStartTime = 0;
+
+    window.addEventListener('mousedown', (e) => {
+      if (e.button === 0) { // left click
+        isDragging = true;
+        dragStartX = e.screenX;
+        dragStartY = e.screenY;
+        clickStartTime = Date.now();
+      }
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        const deltaX = e.screenX - dragStartX;
+        const deltaY = e.screenY - dragStartY;
+        dragStartX = e.screenX;
+        dragStartY = e.screenY;
+
+        if (window.electronAPI) {
+          window.electronAPI.dragCatWindow(deltaX, deltaY);
+        }
+      }
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (isDragging) {
+        isDragging = false;
+        const clickDuration = Date.now() - clickStartTime;
+        // If short click, count as petting!
+        if (clickDuration < 250) {
+          handlePetAction();
+        }
+      }
+    });
+
+    // Double click triggers meow
+    window.addEventListener('dblclick', () => {
+      renderer.triggerMeow();
+      showBubble("Meow! 💕");
+    });
+
+    function handlePetAction() {
+      renderer.triggerPet();
+      showBubble("Purrrr~ ❤️");
+      if (window.electronAPI) {
+        window.electronAPI.petCat();
+      }
+    }
+
+    // Listen for events from main process (customization, state, actions)
+    if (window.electronAPI) {
+      window.electronAPI.onCatState((state) => {
+        renderer.setCustomization({
+          fur: state.fur,
+          accessory: state.accessory,
+          name: state.name
+        });
+      });
+
+      window.electronAPI.onCatAction((action) => {
+        if (action.type === 'feed') {
+          renderer.triggerSnack();
+          showBubble("Yummy! 🐟");
+        } else if (action.type === 'pet') {
+          handlePetAction();
+        } else if (action.type === 'sleep') {
+          renderer.setState('sleep');
+          showBubble("Zzz... 🌙", 3000);
+        } else if (action.type === 'wake') {
+          renderer.setState('idle');
+          showBubble("Good morning!", 2000);
+        } else if (action.type === 'mischief_alert') {
+          showBubble("Hehehe! 😼", 2500);
+        } else if (action.type === 'speech') {
+          showBubble(action.text, 2500);
+        }
+      });
+    }
+
+    // Main animation loop
+    let lastTime = performance.now();
+    function loop(currentTime) {
+      const dt = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+
+      renderer.update(dt);
+      renderer.draw();
+
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    // Autonomous behavior cycle (wandering, sitting, meowing, mischief)
+    let wanderTimer = 0;
+    setInterval(() => {
+      if (renderer.state === 'sleep' || isDragging) return;
+
+      const roll = Math.random();
+      if (roll < 0.35) {
+        // Walk left or right
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        renderer.direction = dir;
+        renderer.setState('walk');
+
+        if (window.electronAPI) {
+          window.electronAPI.startCatWalk(dir);
+        }
+      } else if (roll < 0.65) {
+        // Idle sit
+        renderer.setState('idle');
+      } else if (roll < 0.85) {
+        // Meow
+        renderer.triggerMeow();
+        showBubble("Meow~ 🐾");
+      } else {
+        // Playful mischief check
+        if (window.electronAPI) {
+          window.electronAPI.checkRandomMischief();
+        }
+      }
+    }, 8000);
+  </script>
+</body>
+</html>
