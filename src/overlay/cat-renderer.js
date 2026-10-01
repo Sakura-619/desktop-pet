@@ -537,7 +537,11 @@ class CatRenderer {
       // Collar band
       ctx.fillStyle = '#e74c3c';
       ctx.beginPath();
-      ctx.roundRect(cx - 15, cy + 11, 30, 5, 2);
+      if (ctx.roundRect) {
+        ctx.roundRect(cx - 15, cy + 11, 30, 5, 2);
+      } else {
+        ctx.rect(cx - 15, cy + 11, 30, 5);
+      }
       ctx.fill();
 
       // Golden Bell

@@ -26,7 +26,7 @@ function createWindows() {
     width: 180,
     height: 180,
     x: Math.round(workArea.x + workArea.width * 0.6),
-    y: Math.round(workArea.y + workArea.height - 210),
+    y: Math.round(workArea.y + workArea.height - 230),
     transparent: true,
     frame: false,
     alwaysOnTop: true,
@@ -40,7 +40,7 @@ function createWindows() {
     }
   });
 
-  catWindow.setAlwaysOnTop(true, 'screen-saver');
+  catWindow.setAlwaysOnTop(true);
   catWindow.loadFile(path.join(__dirname, 'src/overlay/cat-overlay.html'));
 
   // 2. Create Corner Widget Window (310x370 px)
@@ -49,14 +49,15 @@ function createWindows() {
   widgetWindow = new BrowserWindow({
     width: widgetWidth,
     height: widgetHeight,
-    x: Math.round(workArea.x + workArea.width - widgetWidth - 16),
-    y: Math.round(workArea.y + workArea.height - widgetHeight - 16),
+    x: Math.round(workArea.x + workArea.width - widgetWidth - 24),
+    y: Math.round(workArea.y + workArea.height - widgetHeight - 24),
     transparent: true,
     frame: false,
     alwaysOnTop: true,
-    skipTaskbar: true,
+    skipTaskbar: false,
+    title: 'Desktop Screen Pet',
     resizable: false,
-    hasShadow: false,
+    hasShadow: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -64,7 +65,7 @@ function createWindows() {
     }
   });
 
-  widgetWindow.setAlwaysOnTop(true, 'floating');
+  widgetWindow.setAlwaysOnTop(true);
   widgetWindow.loadFile(path.join(__dirname, 'src/widget/widget.html'));
 
   // Check initial dismissed state
